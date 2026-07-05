@@ -352,7 +352,10 @@ def _draft_template(brief: Dict) -> Draft:
 
     if a == "cold_intro":
         obs = f"loved the {sells}" if sells else "love what you're building"
-        close = visit or "Would you be open to a quick call?"
+        # Cold leads get a softer, show-don't-tell visit line (they don't know us yet).
+        close = (f"I'm visiting some customers in {brief['city']} next Thursday, happy "
+                 f"to swing by and show you how it all works." if visit
+                 else "Would you be open to a quick call?")
         subject = f"Fleek x {shop} — sourcing vintage in bulk"
         body = (f"Hi {owner}, I came across {shop} and {obs}. "
                 f"Fleek helps vintage shops like yours source hand-picked stock in bulk "
