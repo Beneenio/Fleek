@@ -156,6 +156,15 @@ def _nonblank(v) -> bool:
     return str(v).strip() != ""
 
 
+def _valid_past_date(d: Optional[dt.date], as_of: dt.date) -> Optional[dt.date]:
+    """Drop dates after ``as_of``. A last-contact/last-purchase date in the
+    "future" relative to the snapshot is corrupt (typo, wrong year) and would
+    otherwise produce a negative ``days_since_*`` that leaks into messages."""
+    if d is None or (isinstance(d, float) and pd.isna(d)):
+        return None
+    return d if d <= as_of else None
+
+
 def _days_since(d: Optional[dt.date], as_of: dt.date) -> Optional[int]:
     if d is None:
         return None
@@ -174,8 +183,10 @@ def clean_frame(df: pd.DataFrame, as_of: Optional[dt.date] = None) -> pd.DataFra
     out["channel_confidence"] = [c[1] for c in ch]
     out["channel_label_disagrees"] = [c[2] for c in ch]
 
-    out["last_contact_date"] = out["last_contact_date"].map(parse_messy_date)
-    out["last_purchase_date"] = out["last_purchase_date"].map(parse_messy_date)
+    out["last_contact_date"] = out["last_contact_date"].map(parse_messy_date).map(
+        lambda d: _valid_past_date(d, as_of))
+    out["last_purchase_date"] = out["last_purchase_date"].map(parse_messy_date).map(
+        lambda d: _valid_past_date(d, as_of))
     out["days_since_contact"] = out["last_contact_date"].map(
         lambda d: _days_since(d, as_of))
     out["days_since_purchase"] = out["last_purchase_date"].map(

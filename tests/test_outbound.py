@@ -122,6 +122,37 @@ def test_claude_failure_falls_back_to_template():
     assert d.source == "template"  # never crashes the pipeline
 
 
+def test_brief_drops_negative_daycounts_and_spend():
+    # Future-dated purchase/contact -> negative days; these are corrupt, not usable.
+    b = build_brief(_row(stage="churned", days_since_purchase=-44,
+                         days_since_contact=-5, est_monthly_spend_gbp=-10))
+    assert b["days_since_purchase"] is None
+    assert b["days_since_contact"] is None
+    assert b["monthly_spend_gbp"] is None
+
+
+def test_winback_message_never_renders_negative_gap():
+    d = generate_message(build_brief(_row(stage="churned", days_since_purchase=-44)))
+    assert d.archetype == "win_back"
+    assert "-44" not in d.body and "-" not in d.body.split("while")[1][:12]
+    assert "while" in d.body.lower()  # still acknowledges the gap, just no bad number
+
+
+def test_won_with_corrupt_future_purchase_becomes_winback():
+    # Negative days_since_purchase (future-dated) must not read as an active customer.
+    assert select_archetype(_row(stage="won", days_since_purchase=-30)) == "win_back"
+
+
+def test_placeholder_strings_are_treated_as_missing():
+    b = build_brief(_row(stage="never_contacted", owner_name="N/A", city="unknown",
+                         store_name="nan"))
+    assert b["owner_name"] is None and b["city"] is None and b["store_name"] is None
+    # and they don't leak into the drafted copy
+    body = generate_message(b).body
+    for junk in ("N/A", "unknown", "nan"):
+        assert junk not in body
+
+
 def test_due_for_touch():
     assert due_for_touch(_row(stage="never_contacted")) is True       # no date -> due
     assert due_for_touch(_row(stage="contacted", days_since_contact=30)) is True

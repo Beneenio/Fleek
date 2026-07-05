@@ -61,7 +61,8 @@ def select_archetype(row) -> str:
     archetype = _STAGE_TO_ARCHETYPE.get(stage, "follow_up")
     if archetype == "active_customer":
         dsp = row.get("days_since_purchase")
-        if dsp is None or pd.isna(dsp) or dsp > LAPSED_PURCHASE_DAYS:
+        # A missing, negative (corrupt/future-dated) or stale purchase -> win-back.
+        if dsp is None or pd.isna(dsp) or dsp < 0 or dsp > LAPSED_PURCHASE_DAYS:
             return "win_back"
     return archetype
 
@@ -153,28 +154,41 @@ def build_brief(row) -> Dict:
         "channel": _clean(row.get("channel")),
         "stage": _clean(row.get("stage")),
         "archetype": archetype,
-        "days_since_contact": _num(row.get("days_since_contact")),
-        "days_since_purchase": _num(row.get("days_since_purchase")),
-        "monthly_spend_gbp": _num(row.get("est_monthly_spend_gbp")),
+        # Day-counts and spend can't be negative; a negative value is corrupt
+        # (e.g. a future-dated purchase) so we drop it rather than render it.
+        "days_since_contact": _num(row.get("days_since_contact"), minimum=0),
+        "days_since_purchase": _num(row.get("days_since_purchase"), minimum=0),
+        "monthly_spend_gbp": _num(row.get("est_monthly_spend_gbp"), minimum=0),
         "objection_type": objection["type"],
         "objection_note": objection["raw"],
     }
+
+
+# Cells that are technically non-blank but carry no real value. We must never
+# drop these into a message ("Hi N/A," / "loved the nan").
+_PLACEHOLDER_TOKENS = {"nan", "nat", "none", "null", "n/a", "na", "-", "--",
+                       "unknown", "tbd", "?", "."}
 
 
 def _clean(v):
     if v is None or (isinstance(v, float) and pd.isna(v)):
         return None
     s = str(v).strip()
-    return s or None
+    if not s or s.lower() in _PLACEHOLDER_TOKENS:
+        return None
+    return s
 
 
-def _num(v):
+def _num(v, *, minimum: Optional[float] = None):
     if v is None or (isinstance(v, float) and pd.isna(v)):
         return None
     try:
-        return round(float(v), 1)
+        f = round(float(v), 1)
     except (TypeError, ValueError):
         return None
+    if minimum is not None and f < minimum:
+        return None  # out-of-range -> treat as unknown, never render bad data
+    return f
 
 
 # --- Claude drafting ---------------------------------------------------------
@@ -311,7 +325,8 @@ def _draft_template(brief: Dict) -> Draft:
                 f"you're after.")
     elif a == "win_back":
         gap = brief["days_since_purchase"]
-        gap_txt = f" It's been a while ({gap:.0f} days)." if gap else " It's been a while."
+        gap_txt = (f" It's been a while ({gap:.0f} days)." if gap and gap > 0
+                   else " It's been a while.")
         subject = f"Been a minute — what's new at Fleek"
         body = (f"Hi {owner},{gap_txt} We've made some real changes to how sourcing works "
                 f"since you last ordered, and I think it'd suit {shop} again. "

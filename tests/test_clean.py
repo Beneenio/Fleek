@@ -83,9 +83,23 @@ def test_split_notes():
 def test_dates_parsed_with_days_since():
     df = clean_frame(load_part2_df(), as_of=dt.date(2026, 7, 5))
     assert df["last_contact_date"].notna().sum() > 100
-    # days_since must be non-negative where a date exists
-    ds = df["days_since_contact"].dropna()
-    assert (ds >= 0).all()
+    # days_since must be non-negative where a date exists (future dates dropped)
+    assert (df["days_since_contact"].dropna() >= 0).all()
+    assert (df["days_since_purchase"].dropna() >= 0).all()
+
+
+def test_future_dated_cells_are_dropped_as_corrupt():
+    # A purchase "in the future" relative to as_of is corrupt -> None, no negative days.
+    df = pd.DataFrame([{
+        "lead_id": "X", "store_name": "Time Traveller", "city": "Leeds",
+        "address": None, "instagram_handle": None, "lat": None, "lng": None,
+        "items_listed": None, "sell_through_rate": None, "lead_stage": "won",
+        "last_contact_date": "2026-05-01", "last_purchase_date": "2027-01-01",
+        "lead_channel_label": None, "notes": None,
+    }])
+    cleaned = clean_frame(df, as_of=dt.date(2026, 7, 5))
+    assert cleaned.iloc[0]["last_purchase_date"] is None
+    assert cleaned.iloc[0]["days_since_purchase"] is None
 
 
 # --- Dedupe -----------------------------------------------------------------
