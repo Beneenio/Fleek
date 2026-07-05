@@ -1,0 +1,16 @@
+# Core data pipeline
+pandas>=2.0
+openpyxl>=3.1          # read the .xlsx workbook
+python-dateutil>=2.8   # dayfirst fallback for the messy-date parser
+rapidfuzz>=3.0         # blocked fuzzy dedupe (Part 2), not O(n^2)
+
+# Outbound drafting
+anthropic>=0.40        # Claude API for the outbound message drafts
+python-dotenv>=1.0     # load ANTHROPIC_API_KEY from .env
+
+# UI + charts
+streamlit>=1.30
+plotly>=5.18
+
+# Tests
+pytest>=7.4

@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# Secrets
+.env
+
+# Generated reports — a sample of each is force-added for the Loom (see outputs/.gitignore)
+outputs/*
+!outputs/.gitkeep
+!outputs/samples/
+!outputs/samples/**
+
+# Local case-study working notes (not part of the deliverable)
+.claude/
+info.md
+scratchpad/
