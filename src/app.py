@@ -138,13 +138,19 @@ with tab2:
             hide_index=True, height=420, width="stretch")
 
     st.subheader("Lead browser — draft + the brief behind it")
+    # Only verified stores that actually receive a message belong in the browser;
+    # online resellers and non-vintage shops (skipped_*) are excluded here.
+    messaged = drafts[~drafts["draft_source"].astype(str).str.startswith("skipped")]
+    skipped_n = len(drafts) - len(messaged)
+    st.caption(f"{len(messaged)} verified leads receiving a message "
+               f"({skipped_n} online/non-vintage leads excluded from outreach).")
     order_stage = ["never_contacted", "contacted", "replied", "in_conversation",
                    "negotiating", "meeting_booked", "skeptical", "won", "churned", "lost"]
     fcol1, fcol2 = st.columns(2)
     arch_filter = fcol1.multiselect("Filter by archetype",
-                                    sorted(drafts["archetype"].unique()),
+                                    sorted(messaged["archetype"].unique()),
                                     default=[])
-    view = drafts if not arch_filter else drafts[drafts["archetype"].isin(arch_filter)]
+    view = messaged if not arch_filter else messaged[messaged["archetype"].isin(arch_filter)]
     view = view.reset_index(drop=True)
     view["label"] = (view["store_name"].astype(str) + " — " + view["city"].astype(str)
                      + " (" + view["archetype"] + ")")
