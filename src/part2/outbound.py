@@ -407,13 +407,43 @@ def is_online_business(brief: Dict) -> bool:
     return isinstance(ch, str) and ch.strip().lower() == "online"
 
 
+# Positive signals that a lead is a genuine vintage / secondhand *clothing* store.
+# We only message verified vintage stores; a bio without one of these (a
+# furniture/interiors, charity, records, costume or collectables shop, or a blank
+# / vague bio) is treated as unverified and skipped.
+_VINTAGE_TOKENS = (
+    "vintage", "retro", "secondhand", "second-hand", "thrift", "preloved",
+    "pre-loved", "reworked", "archive", "y2k", "grunge",
+    "denim", "sportswear", "streetwear", "workwear", "womenswear", "menswear",
+    "clothing", "apparel", "garment", "fashion", "wardrobe", "outfit",
+    "tee", "shirt", "jacket", "jeans", "trainers", "sneaker",
+    "levi", "carhartt", "surplus", "designer",
+)
+
+
+def is_vintage_store(brief: Dict) -> bool:
+    """True only for a genuine vintage/secondhand clothing store, judged from the
+    bio. Non-clothing shops (furniture, charity, records, costume, collectables)
+    and blank/vague bios return False and are excluded from outreach."""
+    bio = brief.get("sells")
+    if not bio:
+        return False
+    low = str(bio).lower()
+    return any(tok in low for tok in _VINTAGE_TOKENS)
+
+
 def generate_message(brief: Dict, client=None) -> Draft:
     """Draft one message. Uses Claude if a client is available; else a template.
-    Online businesses are excluded from outreach and returned as a skipped Draft."""
+    Online businesses and non-vintage shops are excluded and returned as a
+    skipped Draft so they still appear in the output, just never messaged."""
     if is_online_business(brief):
         return Draft(brief["archetype"], "",
                      "(Online business, excluded from physical-store outreach.)",
                      "skipped_online")
+    if not is_vintage_store(brief):
+        return Draft(brief["archetype"], "",
+                     "(Not a verified vintage clothing store, excluded from outreach.)",
+                     "skipped_not_vintage")
     if client is not None:
         try:
             return _draft_with_claude(brief, client)
