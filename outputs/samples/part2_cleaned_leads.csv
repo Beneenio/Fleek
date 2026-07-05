@@ -1,0 +1,193 @@
+lead_id,store_name,city,country,channel,stage,days_since_contact,days_since_purchase,est_monthly_spend_gbp,note_bio,note_context
+L1076,Restore Charity Shop,Manchester,UK,physical,never_contacted,,,1656,Charity shop — all proceeds to local causes,
+L1101,Salvage Depot,Glasgow,UK,physical,never_contacted,,,928,"Records, vinyl & memorabilia",
+L1172,eragoods99,,,online,never_contacted,,,2286,,
+L1005,Reclaimed Interiors,London,UK,physical,contacted,68.0,,1490,Fancy dress & theatrical costume hire,
+L1161,sourcedera14,,,online,never_contacted,,,1883,,
+L1130,Curated Vault,Los Angeles,USA,physical,contacted,82.0,,5504,"Curated vintage womenswear, Levi's & band tees",
+L1146,archivepicks77,,,online,never_contacted,,,2637,"IG shop, DMs open",
+L1204,Vinyl Revival Records,Berlin,Germany,physical,lost,52.0,,1829,Antique furniture & mid-century homeware,
+L1085,Golden Era Closet,Bristol,UK,physical,contacted,39.0,,1419,"Vintage workwear, military surplus, carhartt",
+L1121,Dusty Depot,New York,USA,physical,contacted,55.0,,5106,80s/90s denim & sportswear specialist,
+L1026,Curated Apparel,London,UK,physical,contacted,16.0,,5126,Hand-picked vintage from the 60s to the 90s,"Left a voicemail, no callback yet."
+L1203,RECLAIMED INTERIORS,Los Angeles,USA,physical,skeptical,14.0,,1684,Antique furniture & mid-century homeware,"Tried us in 2023, wasn't happy with the sizing mix."
+L1186,retrofinds66,,,online,churned,76.0,184.0,2352,"Fast seller, good margins",
+L1190,archivefinds16,,,online,churned,65.0,280.0,2046,"Fast seller, good margins",
+L1177,deadera16,,,online,contacted,36.0,,2136,,
+L1087,Mercer Archive,Bristol,UK,physical,replied,68.0,,2126,"Curated vintage womenswear, Levi's & band tees",
+L1107,Revival Threads,Paris,France,physical,contacted,34.0,,6348,"Vintage workwear, military surplus, carhartt",
+L1149,sourcedco83,,,online,replied,53.0,,3272,,
+L1188,grailsupply32,,,online,never_contacted,,,3456,"Fast seller, good margins",
+L1150,thriftedera99,,,online,contacted,45.0,,307,Sells on Depop + Vinted,
+L1028,Faded Apparel,London,UK,physical,won,15.0,33.0,4143,80s/90s denim & sportswear specialist,
+L1036,Patina Emporium,London,UK,physical,churned,96.0,343.0,1534,Retro football shirts & vintage sportswear,Keen but wants to see the app before committing.
+L1110,Revival Studio,Berlin,Germany,physical,skeptical,41.0,,1149,"Collectables, china, and bric-a-brac","Second shop opening soon, wants volume."
+L1153,deadco34,,,online,contacted,86.0,,883,Sells on Depop + Vinted,
+L1016,Echo Garments,London,UK,physical,in_conversation,14.0,,3427,"Vintage streetwear — Nike, Adidas, Ralph",
+L1074,Retrograde Store,Brighton,UK,physical,never_contacted,,,2043,"Y2K, grunge and reworked one-off pieces",
+L1066,Wilder Exchange,Brighton,UK,physical,in_conversation,102.0,,845,"Vintage streetwear — Nike, Adidas, Ralph","Instagram DMs open, email bounced."
+L1156,thriftedgoods77,,,online,contacted,56.0,,1364,"Whatnot seller, live sales",
+L1067,Analog Room,Brighton,UK,physical,meeting_booked,56.0,,2281,"Vintage workwear, military surplus, carhartt",
+L1052,Echo Store,London,UK,physical,never_contacted,,,3837,Hand-picked vintage from the 60s to the 90s,
+L1057,Static Vault,London,UK,physical,lost,29.0,,1987,"Collectables, china, and bric-a-brac","Met at a market, said to drop by the shop."
+L1115,Marlowe Goods,Amsterdam,Netherlands,physical,never_contacted,,,4658,Reworked vintage and archive designer pieces,
+L1147,eraroom41,,,online,replied,32.0,,1015,,
+L1041,Sunday Collective,London,UK,physical,negotiating,12.0,,1256,Fancy dress & theatrical costume hire,
+L1003,Analog Emporium,London,UK,physical,negotiating,55.0,,2933,Hand-picked vintage from the 60s to the 90s,
+L1162,grailfinds3,,,online,lost,8.0,,2781,"IG shop, DMs open",
+L1118,Worn Rail,Amsterdam,Netherlands,physical,replied,29.0,,905,"Collectables, china, and bric-a-brac","Left a voicemail, no callback yet."
+L1176,studioarchive99,,,online,never_contacted,,,614,Sells on Depop + Vinted,
+L1132,thriftedera71,,,online,never_contacted,,,1219,,
+L1164,eragoods88,,,online,never_contacted,,,1340,,
+L1160,theco92,,,online,meeting_booked,63.0,,1990,"IG shop, DMs open",
+L1169,deadroom16,,,online,in_conversation,56.0,,1530,"Whatnot seller, live sales",
+L1091,Wilder Supply,Bristol,UK,physical,in_conversation,17.0,,1306,"Curated vintage womenswear, Levi's & band tees","Instagram DMs open, email bounced."
+L1108,Velvet Corner,Paris,France,physical,replied,15.0,,3721,Reworked vintage and archive designer pieces,
+L1060,Bygone Racks,London,UK,physical,replied,62.0,,2389,80s/90s denim & sportswear specialist,"Tried us in 2023, wasn't happy with the sizing mix."
+L1183,therail67,,,online,never_contacted,,,1518,"Whatnot seller, live sales",
+L1163,stockvault47,,,online,contacted,68.0,,497,,
+L1104,Heirloom Archive,Paris,France,physical,won,54.0,47.0,2767,Reworked vintage and archive designer pieces,
+L1127,Marlowe Vintage,Los Angeles,USA,physical,replied,110.0,,3472,Hand-picked vintage from the 60s to the 90s,
+L1086,Golden Era Loft,Bristol,UK,physical,never_contacted,,,2314,"Vintage workwear, military surplus, carhartt",
+L1138,retrosupply58,,,online,won,44.0,16.0,764,"Whatnot seller, live sales",
+L1202,WILDER GOODS,Leeds,UK,physical,negotiating,58.0,,1242,80s/90s denim & sportswear specialist,
+L1142,retroarchive14,,,online,replied,40.0,,806,"Fast seller, good margins",
+L1199,Ragged Goods,Brighton,UK,physical,replied,6.0,,3932,"Vintage workwear, military surplus, carhartt",Busy on weekends — visit midweek.
+L1012,Heirloom Depot,London,UK,physical,lost,37.0,,4377,"Y2K, grunge and reworked one-off pieces",
+L1113,Heirloom Vault,Berlin,Germany,physical,in_conversation,65.0,,2637,"Y2K, grunge and reworked one-off pieces","Price-sensitive, compares to local wholesalers."
+L1179,reworkedera62,,,online,never_contacted,,,1697,"Whatnot seller, live sales",
+L1004,Heirloom Store,London,UK,physical,won,18.0,40.0,8087,"Y2K, grunge and reworked one-off pieces",
+L1010,Second Racks,London,UK,physical,meeting_booked,20.0,,5875,Hand-picked vintage from the 60s to the 90s,"Met at a market, said to drop by the shop."
+L1119,Restore Charity Shop,Amsterdam,Netherlands,physical,won,86.0,21.0,1782,Fancy dress & theatrical costume hire,
+L1090,Revival Supply,Bristol,UK,physical,contacted,28.0,,2472,Retro football shirts & vintage sportswear,"Left a voicemail, no callback yet."
+L1013,Helping Hand Charity,London,UK,physical,contacted,116.0,,1720,Fancy dress & theatrical costume hire,Owner mentioned they already buy from a Pakistan supplier.
+L1137,reworkedvault89,,,online,replied,81.0,,2088,"IG shop, DMs open",
+L1198,THE COSTUME TRUNK,London,UK,physical,churned,57.0,,1196,"Records, vinyl & memorabilia",
+L1058,Thread Rail,London,UK,physical,churned,63.0,,3845,Hand-picked vintage from the 60s to the 90s,
+L1131,depopco11,,,online,contacted,6.0,,2877,"Fast seller, good margins",
+L1015,Loop Wardrobe,London,UK,physical,replied,19.0,,7824,Hand-picked vintage from the 60s to the 90s,
+L1167,stockdrip47,,,online,replied,48.0,,200,"Fast seller, good margins",
+L1187,deadthreads62,,,online,never_contacted,,,498,,
+L1024,Ragged Trading Co,London,UK,physical,contacted,28.0,,3522,"Y2K, grunge and reworked one-off pieces",Busy on weekends — visit midweek.
+L1148,retropicks38,,,online,never_contacted,,,1308,Sells on Depop + Vinted,
+L1096,Flea & Co,Leeds,UK,physical,meeting_booked,114.0,,1080,Reclaimed furniture and home restoration,
+L1095,Moth Vault,Leeds,UK,physical,negotiating,32.0,,1265,80s/90s denim & sportswear specialist,"Tried us in 2023, wasn't happy with the sizing mix."
+L1078,Wilder & Sons,Manchester,UK,physical,never_contacted,,,2335,Retro football shirts & vintage sportswear,
+L1136,eraarchive59,,,online,replied,10.0,,1122,"Fast seller, good margins",
+L1129,Kestrel Goods,Los Angeles,USA,physical,contacted,18.0,,4499,Retro football shirts & vintage sportswear,
+L1143,depoprail41,,,online,churned,32.0,272.0,1751,,
+L1144,eraroom25,,,online,never_contacted,,,200,,
+L1031,Bygone Exchange,London,UK,physical,contacted,74.0,,3749,"Y2K, grunge and reworked one-off pieces",
+L1201,NOMAD ROOM,Bristol,UK,physical,lost,62.0,,3732,80s/90s denim & sportswear specialist,
+L1055,Thread Garments,London,UK,physical,contacted,97.0,,1108,Reclaimed furniture and home restoration,
+L1011,Golden Era Trading Co,London,UK,physical,lost,88.0,,2700,"Vintage workwear, military surplus, carhartt",Keen but wants to see the app before committing.
+L1125,Marlowe Exchange,New York,USA,physical,contacted,31.0,,1193,Reworked vintage and archive designer pieces,
+L1029,Attic Apparel,London,UK,physical,contacted,28.0,,1618,80s/90s denim & sportswear specialist,
+L1049,Marlowe Rail,London,UK,physical,contacted,112.0,,2428,Hand-picked vintage from the 60s to the 90s,
+L1050,Analog Closet,London,UK,physical,contacted,108.0,,1085,"Records, vinyl & memorabilia",Keen but wants to see the app before committing.
+L1083,Patina Store,Manchester,UK,physical,never_contacted,,,2389,Reworked vintage and archive designer pieces,"Heard of Fleek, thinks it's 'for small resellers'."
+L1178,deadpicks79,,,online,never_contacted,,,2479,"Whatnot seller, live sales",
+L1032,Second Store,London,UK,physical,skeptical,23.0,,1794,"Vintage streetwear — Nike, Adidas, Ralph",
+L1051,Bygone Room,London,UK,physical,never_contacted,,,654,Reclaimed furniture and home restoration,
+L1103,Pinegrove Store,Paris,France,physical,meeting_booked,45.0,,2579,"Curated vintage womenswear, Levi's & band tees",Keen but wants to see the app before committing.
+L1072,Bygone Emporium,Brighton,UK,physical,contacted,115.0,,3278,Hand-picked vintage from the 60s to the 90s,
+L1126,Retrograde Racks,Los Angeles,USA,physical,meeting_booked,23.0,,7414,"Curated vintage womenswear, Levi's & band tees","Instagram DMs open, email bounced."
+L1173,thedrip50,,,online,never_contacted,,,1638,"Fast seller, good margins",
+L1184,archivefinds36,,,online,won,5.0,8.0,1613,"IG shop, DMs open",
+L1071,Worn Exchange,Brighton,UK,physical,replied,11.0,,3357,Retro football shirts & vintage sportswear,
+L1030,Faded Loft,London,UK,physical,negotiating,63.0,,3558,"Vintage workwear, military surplus, carhartt",
+L1077,Velvet Closet,Manchester,UK,physical,never_contacted,,,804,"Vintage streetwear — Nike, Adidas, Ralph",
+L1038,Moth Supply,London,UK,physical,contacted,80.0,,1273,80s/90s denim & sportswear specialist,
+L1056,Dusty Vault,London,UK,physical,contacted,7.0,,3762,"Vintage streetwear — Nike, Adidas, Ralph",
+L1099,Nomad Vault,Glasgow,UK,physical,negotiating,20.0,,3456,Reworked vintage and archive designer pieces,
+L1111,Velvet Exchange,Berlin,Germany,physical,negotiating,96.0,,3572,"Curated vintage womenswear, Levi's & band tees",
+L1123,Dusty Store,New York,USA,physical,skeptical,44.0,,1393,"Vintage streetwear — Nike, Adidas, Ralph","Instagram DMs open, email bounced."
+L1062,Velvet Room,London,UK,physical,in_conversation,101.0,,879,"Y2K, grunge and reworked one-off pieces",
+L1097,Faded Vault,Glasgow,UK,physical,won,80.0,44.0,656,"Vintage workwear, military surplus, carhartt",Owner mentioned they already buy from a Pakistan supplier.
+L1063,Rewind Society,London,UK,physical,never_contacted,,,1388,"Vintage streetwear — Nike, Adidas, Ralph","Instagram DMs open, email bounced."
+L1133,stockrail59,,,online,churned,64.0,237.0,236,Sells on Depop + Vinted,
+L1145,depopthreads55,,,online,never_contacted,,,713,"Whatnot seller, live sales",
+L1196,WORN TRADING CO,London,UK,physical,contacted,33.0,,4189,"Y2K, grunge and reworked one-off pieces",
+L1181,archivedrip82,,,online,never_contacted,,,1998,"IG shop, DMs open",
+L1037,Static Racks,London,UK,physical,meeting_booked,117.0,,1420,"Curated vintage womenswear, Levi's & band tees",Keen but wants to see the app before committing.
+L1045,Faded Denim,London,UK,physical,meeting_booked,62.0,,902,"Vintage streetwear — Nike, Adidas, Ralph",
+L1018,Analog Loft,London,UK,physical,meeting_booked,14.0,,4029,Retro football shirts & vintage sportswear,
+L1098,Attic Rail,Glasgow,UK,physical,contacted,85.0,,1920,Reworked vintage and archive designer pieces,"Left a voicemail, no callback yet."
+L1105,Foundry Archive,Paris,France,physical,churned,13.0,,6501,"Curated vintage womenswear, Levi's & band tees",
+L1001,Faded & Sons,London,UK,physical,negotiating,75.0,,4064,"Vintage workwear, military surplus, carhartt",
+L1002,Second & Sons,London,UK,physical,churned,9.0,172.0,6770,"Curated vintage womenswear, Levi's & band tees",
+L1039,Echo Collective,London,UK,physical,contacted,20.0,,2931,Reworked vintage and archive designer pieces,
+L1020,Cedar Exchange,London,UK,physical,contacted,73.0,,5229,Retro football shirts & vintage sportswear,Owner mentioned they already buy from a Pakistan supplier.
+L1152,stockfinds96,,,online,negotiating,10.0,,2079,"IG shop, DMs open",
+L1053,Flea & Co,London,UK,physical,never_contacted,,,1382,Reclaimed furniture and home restoration,"Tried us in 2023, wasn't happy with the sizing mix."
+L1047,Second Room,London,UK,physical,skeptical,61.0,,5518,"Y2K, grunge and reworked one-off pieces",
+L1079,Reloved Supply,Manchester,UK,physical,contacted,17.0,,1685,Charity shop — all proceeds to local causes,
+L1140,stockroom69,,,online,never_contacted,,,2224,"Whatnot seller, live sales",
+L1023,Faded Finds,London,UK,physical,never_contacted,,,1559,Reworked vintage and archive designer pieces,"Met at a market, said to drop by the shop."
+L1157,archiveco79,,,online,won,74.0,38.0,1417,"IG shop, DMs open",
+L1124,Attic Garments,New York,USA,physical,never_contacted,,,5294,Hand-picked vintage from the 60s to the 90s,
+L1089,Revival Trading Co,Bristol,UK,physical,skeptical,112.0,,1250,"Vintage workwear, military surplus, carhartt","Price-sensitive, compares to local wholesalers."
+L1158,studiofinds26,,,online,meeting_booked,16.0,,200,,
+L1189,retroco74,,,online,never_contacted,,,1337,"Whatnot seller, live sales",
+L1112,Time Warp Exchange,Berlin,Germany,physical,never_contacted,,,588,Hand-picked vintage from the 60s to the 90s,Keen but wants to see the app before committing.
+L1117,Attic Room,Amsterdam,Netherlands,physical,in_conversation,113.0,,2547,"Vintage streetwear — Nike, Adidas, Ralph","Met at a market, said to drop by the shop."
+L1046,Loop Apparel,London,UK,physical,negotiating,13.0,,1787,"Vintage streetwear — Nike, Adidas, Ralph","Heard of Fleek, thinks it's 'for small resellers'."
+L1035,Attic Wardrobe,London,UK,physical,lost,90.0,,5639,80s/90s denim & sportswear specialist,
+L1154,grailfinds46,,,online,churned,60.0,223.0,413,"Fast seller, good margins",
+L1180,eraroom21,,,online,never_contacted,,,1057,,
+L1192,depoprail23,,,online,contacted,90.0,,422,"Fast seller, good margins",
+L1139,stockpicks87,,,online,never_contacted,,,783,,
+L1120,Mercer Society,New York,USA,physical,never_contacted,,,3087,Charity shop — all proceeds to local causes,
+L1171,reworkeddrip77,,,online,churned,65.0,178.0,200,,
+L1084,Analog Corner,Manchester,UK,physical,meeting_booked,42.0,,491,"Records, vinyl & memorabilia",
+L1092,Retrograde Corner,Leeds,UK,physical,contacted,69.0,,664,Reclaimed furniture and home restoration,"Second shop opening soon, wants volume."
+L1009,Cedar Wardrobe,London,UK,physical,churned,44.0,,405,"Y2K, grunge and reworked one-off pieces","Instagram DMs open, email bounced."
+L1008,Foundry & Sons,London,UK,physical,never_contacted,,,5326,"Curated vintage womenswear, Levi's & band tees",Owner mentioned they already buy from a Pakistan supplier.
+L1044,Relic Vault,London,UK,physical,in_conversation,102.0,,4040,Retro football shirts & vintage sportswear,"Price-sensitive, compares to local wholesalers."
+L1194,Attic Finds,Leeds,UK,physical,contacted,39.0,,1271,"Y2K, grunge and reworked one-off pieces","Met at a market, said to drop by the shop."
+L1034,Analog Finds,London,UK,physical,in_conversation,24.0,,893,"Records, vinyl & memorabilia",
+L1068,Homestead Collectibles,Brighton,UK,physical,skeptical,117.0,,889,Antique furniture & mid-century homeware,
+L1191,sourcedvault98,,,online,lost,73.0,,1712,,
+L1073,Nomad Denim,Brighton,UK,physical,never_contacted,,,300,Hand-picked vintage from the 60s to the 90s,"Met at a market, said to drop by the shop."
+L1064,Faded Trading Co,London,UK,physical,churned,96.0,230.0,2300,"Curated vintage womenswear, Levi's & band tees","Price-sensitive, compares to local wholesalers."
+L1080,Dusty Shelves Antiques,Manchester,UK,physical,never_contacted,,,1040,Reclaimed furniture and home restoration,
+L1100,Heirloom Apparel,Glasgow,UK,physical,never_contacted,,,3363,"Curated vintage womenswear, Levi's & band tees",
+L1165,grailroom62,,,online,churned,30.0,,1218,"Fast seller, good margins",
+L1040,Curated Racks,London,UK,physical,contacted,13.0,,607,"Y2K, grunge and reworked one-off pieces",
+L1159,thepicks63,,,online,contacted,58.0,,882,Sells on Depop + Vinted,
+L1174,eraera65,,,online,negotiating,4.0,,1727,,
+L1022,Time Warp Depot,London,UK,physical,never_contacted,,,3707,"Vintage streetwear — Nike, Adidas, Ralph","Left a voicemail, no callback yet."
+L1135,deadco25,,,online,never_contacted,,,1412,,
+L1175,retrothreads90,,,online,replied,77.0,,200,"Fast seller, good margins",
+L1007,Marlowe Denim,London,UK,physical,replied,114.0,,3801,"Vintage workwear, military surplus, carhartt","Price-sensitive, compares to local wholesalers."
+L1014,Foundry Trading Co,London,UK,physical,never_contacted,,,405,"Vintage workwear, military surplus, carhartt",
+L1141,stockthreads26,,,online,never_contacted,,,1530,,
+L1122,Kestrel Store,New York,USA,physical,churned,51.0,319.0,435,Reworked vintage and archive designer pieces,Busy on weekends — visit midweek.
+L1017,Loop Studio,London,UK,physical,negotiating,35.0,,2489,Retro football shirts & vintage sportswear,
+L1025,Wilder Archive,London,UK,physical,contacted,84.0,,1072,Reclaimed furniture and home restoration,
+L1027,Heirloom Goods,London,UK,physical,meeting_booked,121.0,,1107,"Vintage workwear, military surplus, carhartt",
+L1185,retrosupply29,,,online,replied,75.0,,1885,,
+L1205,Foundry Room,London,UK,physical,meeting_booked,32.0,,990,"Vintage workwear, military surplus, carhartt","Met at a market, said to drop by the shop."
+L1065,Pinegrove Apparel,London,UK,physical,never_contacted,,,4737,Retro football shirts & vintage sportswear,Busy on weekends — visit midweek.
+L1170,archivegoods76,,,online,never_contacted,,,1917,"IG shop, DMs open",
+L1033,Static Loft,London,UK,physical,negotiating,16.0,,2145,80s/90s denim & sportswear specialist,"Heard of Fleek, thinks it's 'for small resellers'."
+L1006,Wilder Threads,London,UK,physical,lost,12.0,,670,Fancy dress & theatrical costume hire,
+L1043,Dusty Corner,London,UK,physical,never_contacted,,,3738,"Curated vintage womenswear, Levi's & band tees",
+L1106,Echo Emporium,Paris,France,physical,contacted,65.0,,3374,"Y2K, grunge and reworked one-off pieces",
+L1116,Attic Supply,Amsterdam,Netherlands,physical,replied,76.0,,4547,"Y2K, grunge and reworked one-off pieces","Price-sensitive, compares to local wholesalers."
+L1134,thriftedpicks46,,,online,won,25.0,11.0,938,Sells on Depop + Vinted,
+L1151,archiveera69,,,online,never_contacted,,,2288,,
+L1114,Second Wardrobe,Berlin,Germany,physical,contacted,73.0,,3077,Retro football shirts & vintage sportswear,
+L1070,Pinegrove Studio,Brighton,UK,physical,meeting_booked,51.0,,5236,"Curated vintage womenswear, Levi's & band tees",
+L1102,Bygone Threads,Paris,France,physical,meeting_booked,30.0,,5257,"Vintage streetwear — Nike, Adidas, Ralph",
+L1166,thriftedthreads84,,,online,contacted,73.0,,1594,"Whatnot seller, live sales",
+L1155,reworkedco18,,,online,negotiating,75.0,,1529,Sells on Depop + Vinted,
+L1182,deadthreads93,,,online,contacted,26.0,,1769,"Fast seller, good margins",
+L1075,Bygone Garments,Brighton,UK,physical,replied,75.0,,806,"Y2K, grunge and reworked one-off pieces",
+L1168,reworkedvault57,,,online,never_contacted,,,2325,"Whatnot seller, live sales",
+L1082,Golden Era Goods,Manchester,UK,physical,never_contacted,,,507,"Vintage streetwear — Nike, Adidas, Ralph",
+L1081,Mercer Loft,Manchester,UK,physical,never_contacted,,,4992,"Curated vintage womenswear, Levi's & band tees",
+L1059,Nomad Emporium,London,UK,physical,churned,82.0,381.0,1648,Fancy dress & theatrical costume hire,
+L1042,Relic Racks,London,UK,physical,never_contacted,,,1199,"Vintage streetwear — Nike, Adidas, Ralph",
+L1021,Golden Era Finds,London,UK,physical,contacted,17.0,,1915,"Vintage workwear, military surplus, carhartt","Met at a market, said to drop by the shop."
+L1019,Cedar Finds,London,UK,physical,skeptical,59.0,,1118,Fancy dress & theatrical costume hire,
