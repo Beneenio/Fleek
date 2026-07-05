@@ -289,59 +289,131 @@ def _draft_with_claude(brief: Dict, client) -> Draft:
 
 
 # --- Deterministic template fallback ----------------------------------------
+# Global copy rules applied to every template message (subject + body):
+#   1. No em/en dashes anywhere. Spaced dashes read as a pause -> comma; a bare
+#      dash -> hyphen. (Regular hyphens like "myth-bust" are left untouched.)
+#   2. The greeting addresses the owner by first name only, never the full name.
+def _no_dashes(text: str) -> str:
+    return (text.replace(" — ", ", ").replace(" – ", ", ")
+                .replace("—", "-").replace("–", "-"))
+
+
+def _first_name(name: Optional[str]) -> Optional[str]:
+    if not name:
+        return None
+    return name.split()[0]
+
+
+# CRM/meta notes that describe the *account*, not the stock. These must never be
+# quoted back as "what they sell"; a bio matching one falls back to neutral copy.
+_BIO_META_TOKENS = ("ig shop", "dm open", "dms open", "depop", "vinted",
+                    "whatnot", "fast seller", "good margins", "live sales",
+                    "sells on", "reseller")
+
+
+def _sells_phrase(bio: Optional[str]) -> Optional[str]:
+    """A short, lower-cased observation of what a shop sells, drawn from the raw
+    bio — or None when the bio is CRM/meta noise rather than a description of
+    stock. Trims trailing asides and descriptor suffixes so the result reads as
+    an observation, not a copy-paste of the data."""
+    if not bio:
+        return None
+    low = bio.strip().lower()
+    if any(tok in low for tok in _BIO_META_TOKENS):
+        return None
+    # Drop a trailing dash aside, e.g. "vintage streetwear — Nike, Adidas, Ralph".
+    for dash in ("—", "–", " - "):
+        if dash in low:
+            low = low.split(dash)[0].strip()
+    # "... sportswear specialist" -> "... sportswear".
+    for suf in (" specialist", " specialists"):
+        if low.endswith(suf):
+            low = low[: -len(suf)].strip()
+    return low or None
+
+
+def _visit_cta(brief: Dict) -> Optional[str]:
+    """An in-person visit CTA, but only where there's a real store to drop into:
+    a physical shop with a known city. Online leads never reach here (they're
+    excluded from outreach) and a missing city returns None so the caller falls
+    back to a remote CTA instead of writing 'I'm in your city'."""
+    city = brief["city"]
+    if not city or is_online_business(brief):
+        return None
+    return f"I'm in {city} next Thursday so I'll swing by to say hi."
+
+
 def _draft_template(brief: Dict) -> Draft:
     shop = brief["store_name"] or "there"
-    owner = brief["owner_name"] or "there"
-    sells = brief["sells"] or "your stock"
-    city = brief["city"] or "your city"
+    owner = _first_name(brief["owner_name"]) or "there"
+    sells = _sells_phrase(brief["sells"])  # None when the bio isn't real stock
+    visit = _visit_cta(brief)              # None when there's no store to visit
     a = brief["archetype"]
 
     if a == "cold_intro":
+        obs = f"loved the {sells}" if sells else "love what you're building"
+        close = visit or "Would you be open to a quick call?"
         subject = f"Fleek x {shop} — sourcing vintage in bulk"
-        body = (f"Hi {owner}, I came across {shop} and loved the {sells.lower()}. "
+        body = (f"Hi {owner}, I came across {shop} and {obs}. "
                 f"Fleek helps vintage shops like yours source hand-picked stock in bulk "
-                f"(100+ pieces at a time) without the usual minimums. "
-                f"Would you be open to a quick call, or a drop-by if I'm in {city}?")
+                f"(100+ pieces at a time) without the usual minimums. {close}")
     elif a == "follow_up":
+        what = f"sourcing {sells}" if sells else "sourcing stock"
         subject = f"Following up — Fleek for {shop}"
-        body = (f"Hi {owner}, circling back on my note about sourcing {sells.lower()} "
+        body = (f"Hi {owner}, circling back on my note about {what} "
                 f"through Fleek. Happy to send a short look at what's landing this week "
                 f"if useful — no pressure either way.")
     elif a == "in_conversation":
+        pricing = f"bulk pricing on {sells}" if sells else "bulk pricing"
+        close = (f"{visit} We can lock in the details then." if visit
+                 else "Which is easier for you?")
         subject = f"Next step for {shop}"
         body = (f"Hi {owner}, good chatting. To keep things moving I can put together "
-                f"bulk pricing on {sells.lower()} or set up a small first order whenever "
-                f"you're ready — which is easier for you?")
+                f"{pricing} or set up a small first order whenever you're ready. {close}")
     elif a == "skeptical":
         line = _OBJECTION_TEMPLATE_LINE.get(brief["objection_type"],
                                             _OBJECTION_TEMPLATE_LINE["generic"])
+        # Soft, opt-in visit for a skeptic — friendly, never a pitch.
+        close = (f"No hard sell. {visit}" if visit
+                 else "No hard sell — happy to let the stock speak for itself whenever suits.")
         subject = f"Fair point — a quick thought for {shop}"
-        body = (f"Hi {owner}, totally hear you. {line} "
-                f"No hard sell — happy to let the stock speak for itself whenever suits.")
+        body = f"Hi {owner}, totally hear you. {line} {close}"
     elif a == "active_customer":
+        more = f"more of the {sells} you're after" if sells else "more of what's working for you"
+        tail = f" {visit}" if visit else ""
         subject = f"How's it going, {shop}?"
         body = (f"Hi {owner}, just checking in — how did the last order land in-store? "
-                f"Let me know what's selling and I'll line up more of the {sells.lower()} "
-                f"you're after.")
+                f"Let me know what's selling and I'll line up {more}.{tail}")
     elif a == "win_back":
-        gap = brief["days_since_purchase"]
-        gap_txt = (f" It's been a while ({gap:.0f} days)." if gap and gap > 0
-                   else " It's been a while.")
+        tail = f" {visit}" if visit else ""
         subject = f"Been a minute — what's new at Fleek"
-        body = (f"Hi {owner},{gap_txt} We've made some real changes to how sourcing works "
-                f"since you last ordered, and I think it'd suit {shop} again. "
-                f"Would you be open to taking another look — no commitment?")
+        body = (f"Hi {owner}, it's been a while since we last worked together. We've made "
+                f"some real changes to how sourcing works, and I think it'd suit {shop} "
+                f"again. Would you be open to taking another look? No commitment.{tail}")
     else:  # lost
+        src = f"sourcing {sells} in bulk" if sells else "sourcing stock in bulk"
         subject = f"Leaving the door open — {shop}"
-        body = (f"Hi {owner}, no worries that the timing wasn't right. If sourcing "
-                f"{sells.lower()} in bulk becomes useful down the line, I'm one message away. "
+        body = (f"Hi {owner}, no worries that the timing wasn't right. If {src} "
+                f"becomes useful down the line, I'm one message away. "
                 f"Wishing {shop} a great season.")
 
-    return Draft(a, f"[template] {subject}", body, "template")
+    return Draft(a, _no_dashes(f"[template] {subject}"), _no_dashes(body), "template")
+
+
+def is_online_business(brief: Dict) -> bool:
+    """Part 2 targets physical stores. Online resellers (IG/Depop-only, no
+    storefront) are out of scope for outreach and must never be drafted a message."""
+    ch = brief.get("channel")
+    return isinstance(ch, str) and ch.strip().lower() == "online"
 
 
 def generate_message(brief: Dict, client=None) -> Draft:
-    """Draft one message. Uses Claude if a client is available; else a template."""
+    """Draft one message. Uses Claude if a client is available; else a template.
+    Online businesses are excluded from outreach and returned as a skipped Draft."""
+    if is_online_business(brief):
+        return Draft(brief["archetype"], "",
+                     "(Online business, excluded from physical-store outreach.)",
+                     "skipped_online")
     if client is not None:
         try:
             return _draft_with_claude(brief, client)
