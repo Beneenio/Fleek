@@ -14,7 +14,7 @@ from typing import Optional
 
 import pandas as pd
 
-from src.common.io import REPO_ROOT, load_part1_df
+from src.common.io import REPO_ROOT, load_part1_df, load_part2_df
 from src.common.vintage_classify import classify_frame
 from src.part1.enrich import enrich_frame, Provider
 from src.part1.cluster import assign_clusters, nearest_neighbour_route
@@ -27,8 +27,10 @@ MD_PATH = OUTPUT_DIR / "part1_ranked_manchester.md"
 # Columns surfaced in the CSV (keep it readable, not the whole internal frame).
 _CSV_COLS = [
     "rank", "score", "place_name", "maps_category", "rating", "review_count",
-    "price_level", "cluster", "neighbours", "full_address", "postcode",
-    "website", "phone", "vintage_confidence", "reason",
+    "price_level", "cluster", "neighbours",
+    "enr_stock_appetite", "enr_storefront_size", "enr_instagram_followers",
+    "enr_est_monthly_spend", "enr_has_website", "enr_source",
+    "full_address", "postcode", "website", "phone", "vintage_confidence", "reason",
 ]
 
 
@@ -41,7 +43,16 @@ def run(path: Optional[str] = None, provider: Optional[Provider] = None,
     labels = ["genuine", "ambiguous"] if include_ambiguous else ["genuine"]
     genuine = classified[classified["vintage_label"].isin(labels)].copy()
 
-    enriched = enrich_frame(genuine, provider=provider)
+    # Offline enrichment (review-text stock/size + website presence), joined to the
+    # Part2 CRM book for real IG followers + spend where a scraped shop is already a
+    # known lead. Missing book (or a custom `provider`) degrades gracefully.
+    crm_df = None
+    if provider is None:
+        try:
+            crm_df = load_part2_df()
+        except FileNotFoundError:
+            crm_df = None
+    enriched = enrich_frame(genuine, provider=provider, crm_df=crm_df)
 
     cluster, neighbours = assign_clusters(enriched, radius_m=radius_m)
     enriched["cluster"] = cluster

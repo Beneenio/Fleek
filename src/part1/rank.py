@@ -16,15 +16,16 @@ from typing import Dict, Tuple
 import numpy as np
 import pandas as pd
 
-# Weights sum to 1.0. Enrichment carries real weight but contributes 0 under the
-# stub, so today's scores top out ~85 and the *ordering* is unaffected — the
-# headroom is deliberate and documented.
+# Weights sum to 1.0. Enrichment now carries real offline signal (stock appetite &
+# storefront size from review text, real IG/spend where a shop is already in the CRM,
+# website presence) — see enrich.py. Live IG-activity / multi-location / Google
+# busyness slot into the same weight when a network provider fills them.
 WEIGHTS: Dict[str, float] = {
     "rating": 0.30,      # quality
     "reviews": 0.25,     # size / footfall / appetite
     "price": 0.10,       # positioning (mid/upmarket buys more than pure budget)
     "density": 0.20,     # walkable cluster => efficient day
-    "enrichment": 0.15,  # IG/site/multi-location/busyness (stubbed -> 0)
+    "enrichment": 0.15,  # stock appetite / storefront size / real IG+spend / website
 }
 
 # neighbours within 500m at which the density signal saturates
@@ -63,28 +64,55 @@ def density_score(neighbours) -> float:
 
 
 def enrichment_score(row, prefix: str = "enr_") -> Tuple[float, list]:
-    """0..1 from enrichment signals, plus notes. All-None (stub) -> 0."""
+    """0..1 from enrichment signals, plus notes. No signals -> 0.
+
+    Weighted toward what matters to a wholesale supplier: stock appetite (how much a
+    shop buys) and real spend/reach lead; storefront size and website presence are
+    tie-breakers. IG activity / multi-location / Google busyness are live-scrape
+    extensions (see enrich.py) and contribute only when a network provider fills them.
+    """
     score = 0.0
     notes = []
+
+    appetite = row.get(f"{prefix}stock_appetite")
+    if appetite is not None and not pd.isna(appetite):
+        score += 0.35 * float(np.clip(appetite, 0.0, 1.0))
+        if appetite >= 0.66:
+            notes.append("high stock turnover")
+        elif appetite > 0:
+            notes.append("moves stock")
+
+    spend = row.get(f"{prefix}est_monthly_spend")
+    if spend is not None and not pd.isna(spend) and spend > 0:
+        s = float(np.clip(math.log10(spend + 1) / math.log10(3000), 0.0, 1.0))
+        score += 0.20 * s
+        notes.append(f"known ~£{int(spend):,}/mo spend")
+
     followers = row.get(f"{prefix}instagram_followers")
     if followers is not None and not pd.isna(followers) and followers > 0:
         f = float(np.clip(math.log10(followers + 1) / math.log10(50000), 0.0, 1.0))
-        score += 0.4 * f
+        score += 0.20 * f
         notes.append(f"IG {int(followers):,} followers")
+
+    size = row.get(f"{prefix}storefront_size")
+    if isinstance(size, str) and size.lower() == "large":
+        score += 0.10
+        notes.append("large storefront")
+
+    if bool(row.get(f"{prefix}has_website")):
+        score += 0.05
+        notes.append("has website")
+
     if bool(row.get(f"{prefix}instagram_active")):
-        score += 0.2
+        score += 0.05
         notes.append("active IG")
     locs = row.get(f"{prefix}num_locations")
     if locs is not None and not pd.isna(locs) and locs > 1:
-        score += 0.2
+        score += 0.05
         notes.append(f"{int(locs)} locations")
-    size = row.get(f"{prefix}storefront_size")
-    if isinstance(size, str) and size.lower() == "large":
-        score += 0.1
-        notes.append("large storefront")
     pop = row.get(f"{prefix}popularity")
     if pop is not None and not pd.isna(pop):
-        score += 0.1 * float(np.clip(pop, 0.0, 1.0))
+        score += 0.05 * float(np.clip(pop, 0.0, 1.0))
         notes.append("busy on Google")
     return float(np.clip(score, 0.0, 1.0)), notes
 
@@ -119,8 +147,6 @@ def _reason(row, components: Dict[str, float]) -> str:
     enr_notes = row.get("_enr_notes")
     if enr_notes:
         parts.append("enrichment: " + ", ".join(enr_notes))
-    else:
-        parts.append("enrichment not yet wired (stub)")
 
     sig = str(row.get("vintage_signals") or "")
     pos = [s for s in sig.split(" | ") if s.startswith("+review")]

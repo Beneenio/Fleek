@@ -2,8 +2,9 @@
 import pandas as pd
 
 from src.part1.cluster import haversine_km, assign_clusters, nearest_neighbour_route
-from src.part1.enrich import EnrichmentSignals
-from src.part1.rank import rank_frame, price_score, reviews_score
+from src.part1.enrich import (EnrichmentSignals, _review_signals, _stub_provider,
+                              make_offline_provider, build_crm_lookup)
+from src.part1.rank import rank_frame, price_score, reviews_score, enrichment_score
 from src.part1.pipeline import run
 
 
@@ -41,18 +42,51 @@ def test_price_and_reviews_scores_monotonic():
     assert reviews_score(800) > reviews_score(50) > reviews_score(0)
 
 
+def test_review_signals_extract_size_and_appetite():
+    size, appetite = _review_signals(
+        "Three floors of curated vintage — massive shop, staff really know their stuff")
+    assert size == "large" and appetite is not None and appetite > 0
+
+    size, appetite = _review_signals("they get huge deliveries weekly")
+    assert appetite is not None and appetite > 0        # turnover cue fires
+
+    assert _review_signals("") == (None, None)          # empty -> no signal
+    assert _review_signals("nice shop")[1] is None       # no size/turnover tell
+
+
+def test_stub_provider_contributes_zero_but_offline_does_not():
+    # The stub proves ranking is unaffected when enrichment is absent...
+    stub = run(write=False, provider=_stub_provider)
+    assert (stub["s_enrichment"] == 0).all()
+    # ...while the default (offline) provider genuinely fills signal.
+    default = run(write=False)
+    assert (default["s_enrichment"] > 0).any()
+
+
+def test_crm_join_pulls_real_ig_and_spend():
+    import pandas as pd
+    crm = pd.DataFrame({
+        "store_name": ["Velvet Closet"], "city": ["Manchester"],
+        "followers": [28714.0], "est_monthly_spend_gbp": [804.0],
+    })
+    lookup = build_crm_lookup(crm)
+    provider = make_offline_provider(lookup)
+    sig = provider({"place_name": "Velvet Closet", "city": "Manchester",
+                    "top_review": "great shop", "website": None})
+    assert sig.instagram_followers == 28714 and sig.est_monthly_spend == 804.0
+    assert "crm" in sig.source
+
+
 def _fixture_provider(row):
     if row.get("place_name") == "Revival Denim":
         return EnrichmentSignals(instagram_followers=42000, instagram_active=True,
                                  num_locations=3, storefront_size="large",
-                                 popularity=0.8, source="fixture")
+                                 stock_appetite=1.0, popularity=0.8, source="fixture")
     return EnrichmentSignals(source="stub")
 
 
-def test_enrichment_is_wired_zero_under_stub_and_lifts_with_data():
-    base = run(write=False)
-    assert (base["s_enrichment"] == 0).all()          # stub contributes nothing
-
+def test_enrichment_lifts_rank_with_strong_signal():
+    base = run(write=False, provider=_stub_provider)
     enriched = run(write=False, provider=_fixture_provider)
     base_rank = int(base.set_index("place_name").loc["Revival Denim", "rank"])
     enr_rank = int(enriched.set_index("place_name").loc["Revival Denim", "rank"])

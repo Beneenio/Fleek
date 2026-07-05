@@ -5,9 +5,10 @@
 The full Part 1 pipeline — from the raw scrape to a ranked, explainable Manchester
 visit list plus a walking route:
 
-- `src/part1/enrich.py` — enrichment **interface** (IG followers/activity, multi-
-  location, storefront size, Google busyness) with a `provider` seam. Stubbed today
-  (returns all-None → bonus 0) but wired and tested.
+- `src/part1/enrich.py` — **real offline enrichment**: stock appetite & storefront
+  size mined from `top_review` text, a **CRM join** to the Part2 book for real IG
+  followers + monthly spend on shops we already know, and website presence — plus a
+  preserved `provider` seam for live IG/multi-location/Google-busyness scraping.
 - `src/part1/cluster.py` — haversine distances, single-linkage **walkable zones**
   (shops within 500m), per-shop neighbour counts (density signal), and a
   nearest-neighbour **route** with total walking distance.
@@ -34,11 +35,14 @@ upmarket).
 - **Density is a real signal, not decoration.** A shop with several genuine
   neighbours earns rank *and* seeds the day plan — you can walk between them. That's
   why clustering feeds both the score and the route.
-- **Enrichment is wired but honestly 0.** Rather than half-build four scrapers, we
-  ship the interface and a `provider` seam. Under the stub every enrichment score is
-  0 (proven by test); pass a fixture provider and a shop with 42k IG followers + 3
-  locations climbs from rank 20 to 3 — proving the day the real data lands, nothing
-  in ranking has to change.
+- **Enrichment pushed past the tab — honestly.** The workbook is synthetic (fake
+  domains), so live IG/site scraping would no-op; instead we mine the signal that *is*
+  present and matters most to a bulk buyer — **how much stock a shop moves** (review
+  text: "three floors", "huge deliveries weekly") — and **join the scrape to our CRM
+  book** to pull real IG followers (14k–29k) and monthly spend for the 3 shops already
+  in it. A `_stub_provider` (all-None → 0) is kept as a tested control, and the
+  network `provider` seam still lets a real-city run fill live signals with no ranking
+  change.
 - **Explainable end to end.** Each row carries its component sub-scores and a reason
   string ("excellent 4.8★ on 684 reviews · mid-range (££) · dense cluster — 7 within
   500m · genuine: sportswear, football shirt"), so "why A beats B" is inspectable.

@@ -74,16 +74,34 @@ normalised then weighted into a 0–100 score with a plain-English reason:
 | log(review_count) | 0.25 | size / footfall / appetite |
 | price positioning | 0.10 | mid/upmarket buys more than pure budget |
 | cluster density | 0.20 | walkable zone → efficient day |
-| enrichment | 0.15 | IG / site / multi-location / busyness — **stubbed → 0 today** |
+| enrichment | 0.15 | stock appetite / storefront size / real IG + spend / website |
 
 Shops are grouped into **walkable zones** (haversine, single-linkage, 500m) and the
-densest zone gets a nearest-neighbour **walking route**. Enrichment is a wired,
-unit-tested interface with a `provider` seam — under the stub every enrichment score
-is 0; pass a fixture provider and a shop with 42k IG followers + 3 locations climbs
-from rank 20 to 3, so the day the real data lands, nothing in ranking changes.
+densest zone gets a nearest-neighbour **walking route**.
+
+**Enrichment — pushed past the tab, honestly.** The brief grades *how far you push
+enrichment*. The catch: this workbook is synthetic, so the `website` domains don't
+resolve and live IG/Street-View scraping would no-op. So rather than fake it, we mine
+the enrichment that's genuinely present and, for a *bulk buyer* like Fleek, the most
+decision-relevant of all — **how much stock a shop moves** ([`enrich.py`](src/part1/enrich.py)):
+
+- **Stock appetite & storefront size from `top_review` text** — reviews like "three
+  floors — massive shop" or "they get huge deliveries weekly" reveal a shop that
+  *buys* a lot. Matched on transferable size/turnover vocabulary (not this file's
+  literal templates), so it carries to a real scrape.
+- **CRM join** — 3 Manchester shops in the scrape already sit in the Part2 book, so we
+  pull their **real IG follower counts (14k–29k) and estimated monthly spend** in
+  directly, keyed by name + city. (This lifts *Patina Store* and *Golden Era Goods*.)
+- **Website presence** — a mild maturity signal, presence only (no fetch).
+
+The **network `provider` seam is preserved**: point it at a real city with live
+domains, implement `provider(row) -> EnrichmentSignals` filling IG activity /
+multi-location / Google busyness, and ranking is unchanged. A `_stub_provider`
+(all-None → enrichment 0) is kept as a control and is unit-tested to prove ranking is
+unaffected when enrichment is absent.
 
 Top of the list: **Second Rail** (4.8★, 684 reviews, 7 shops within 500m), **Second
-Corner**, **Foundry Corner**.
+Corner**, **Analog Archive**.
 
 ### Part 2 cleaning — [`src/part2/clean.py`](src/part2/clean.py)
 
