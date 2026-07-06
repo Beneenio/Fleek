@@ -4,7 +4,8 @@ import pandas as pd
 from src.part1.cluster import haversine_km, assign_clusters, nearest_neighbour_route
 from src.part1.enrich import (EnrichmentSignals, _review_signals, _stub_provider,
                               make_offline_provider, build_crm_lookup)
-from src.part1.rank import rank_frame, price_score, reviews_score, enrichment_score
+from src.part1.rank import (rank_frame, price_score, reviews_score, enrichment_score,
+                            pair_breakdown, explain_pair)
 from src.part1.pipeline import run
 
 
@@ -92,6 +93,27 @@ def test_enrichment_lifts_rank_with_strong_signal():
     enr_rank = int(enriched.set_index("place_name").loc["Revival Denim", "rank"])
     assert enr_rank < base_rank                        # enrichment moved it up
     assert enriched.set_index("place_name").loc["Revival Denim", "s_enrichment"] > 0
+
+
+def test_pair_breakdown_deltas_sum_to_score_gap():
+    ranked = run(write=False)
+    a, b = ranked.iloc[0]["place_name"], ranked.iloc[5]["place_name"]
+    bd = pair_breakdown(ranked, a, b)
+    comp_delta = bd[bd["component"] != "TOTAL"]["delta"].sum()
+    total_gap = float(bd[bd["component"] == "TOTAL"]["delta"].iloc[0])
+    # weighted per-component deltas reconstruct the headline gap (within rounding)
+    assert abs(comp_delta - total_gap) < 0.2
+    expected = round(float(ranked.iloc[0]["score"]) - float(ranked.iloc[5]["score"]), 1)
+    assert total_gap == expected
+
+
+def test_explain_pair_accepts_rank_and_name_and_names_winner():
+    ranked = run(write=False)
+    top, sixth = ranked.iloc[0]["place_name"], ranked.iloc[5]["place_name"]
+    by_name = explain_pair(ranked, top, sixth)
+    by_rank = explain_pair(ranked, 1, 6)          # same two shops, addressed by rank
+    assert top in by_name and "beats" in by_name
+    assert by_name == by_rank                     # name- and rank-lookup agree
 
 
 def test_pipeline_ranks_only_genuine_and_is_sorted():

@@ -35,9 +35,10 @@ The case-study workbook lives at
 
 ```bash
 python run_part1.py                 # ranked Manchester visit list + walking route -> outputs/
+python run_part1.py --compare "Second Rail" "Second Corner"   # why shop A out/under-ranks B (also by rank #)
 python run_part2.py --as-of 2026-07-05   # cleaned book, outbound drafts, city ranking -> outputs/
 streamlit run src/app.py            # interactive tour of both parts (map, drafts, city chart)
-pytest                              # 102 tests: classifier / dates / dedupe / ranking / outbound
+pytest                              # 107 tests: classifier / dates / dedupe / ranking / outbound
 ```
 
 `run_part2.py` uses Claude when `ANTHROPIC_API_KEY` is set, otherwise labelled

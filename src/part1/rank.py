@@ -11,7 +11,8 @@ Every shop gets a signed, weighted score in 0–100 and a plain-English `reason`
 from __future__ import annotations
 
 import math
-from typing import Dict, Tuple
+import re
+from typing import Dict, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -185,3 +186,106 @@ def rank_frame(df: pd.DataFrame, weights: Dict[str, float] = None) -> pd.DataFra
     out.insert(0, "rank", out.index + 1)
     out = out.drop(columns=["_enr_notes"])
     return out
+
+
+# --- Pairwise explainer: "why shop A beats shop B" ---------------------------
+# The brief asks us to be able to show *why* A beats B, not just assert it. The
+# ranked frame already carries every `s_<component>` sub-score, so the gap between
+# two shops decomposes exactly into weighted per-component contributions that sum
+# to the headline score difference.
+
+_COMPONENT_LABELS = {
+    "rating": "quality (rating)",
+    "reviews": "size / footfall (reviews)",
+    "price": "price positioning",
+    "density": "walkable cluster",
+    "enrichment": "enrichment (appetite / IG / spend)",
+}
+
+ShopKey = Union[int, str]
+
+
+def _find_shop(ranked: pd.DataFrame, key: ShopKey) -> pd.Series:
+    """Locate one shop by rank (int) or by name (exact, else unique substring)."""
+    if isinstance(key, (int, np.integer)) or (isinstance(key, str) and key.strip().isdigit()):
+        match = ranked[ranked["rank"] == int(key)]
+    else:
+        names = ranked["place_name"].astype(str).str.lower()
+        s = str(key).strip().lower()
+        match = ranked[names == s]
+        if match.empty:
+            match = ranked[names.str.contains(re.escape(s), regex=True)]
+    if match.empty:
+        raise KeyError(f"no shop matching {key!r}")
+    if len(match) > 1:
+        raise KeyError(f"{key!r} is ambiguous — matches {list(match['place_name'])}")
+    return match.iloc[0]
+
+
+def pair_breakdown(ranked: pd.DataFrame, a: ShopKey, b: ShopKey,
+                   weights: Dict[str, float] = None) -> pd.DataFrame:
+    """Component-by-component score breakdown between shops ``a`` and ``b``.
+
+    Each shop can be named or given by rank. Returns one row per scoring component
+    plus a TOTAL row, with each shop's *weighted points* (out of 100) and the signed
+    ``delta`` (a − b). The deltas sum to the headline score gap, so the ranking is
+    inspectable rather than asserted.
+    """
+    w = weights or WEIGHTS
+    ra, rb = _find_shop(ranked, a), _find_shop(ranked, b)
+
+    rows = []
+    for comp, weight in w.items():
+        pa = weight * float(ra[f"s_{comp}"]) * 100.0
+        pb = weight * float(rb[f"s_{comp}"]) * 100.0
+        rows.append({
+            "component": _COMPONENT_LABELS.get(comp, comp),
+            "weight": weight,
+            f"{ra['place_name']}": round(pa, 1),
+            f"{rb['place_name']}": round(pb, 1),
+            "delta": round(pa - pb, 1),
+        })
+    rows.append({
+        "component": "TOTAL", "weight": sum(w.values()),
+        f"{ra['place_name']}": round(float(ra["score"]), 1),
+        f"{rb['place_name']}": round(float(rb["score"]), 1),
+        "delta": round(float(ra["score"]) - float(rb["score"]), 1),
+    })
+    return pd.DataFrame(rows)
+
+
+def explain_pair(ranked: pd.DataFrame, a: ShopKey, b: ShopKey,
+                 weights: Dict[str, float] = None) -> str:
+    """Plain-English 'why A beats B' summary built from :func:`pair_breakdown`.
+
+    Names the winner, the size of the gap, and which components drove it (largest
+    absolute deltas first), so you can defend any pairwise call in the visit list.
+    """
+    w = weights or WEIGHTS
+    ra, rb = _find_shop(ranked, a), _find_shop(ranked, b)
+    na, nb = ra["place_name"], rb["place_name"]
+    gap = float(ra["score"]) - float(rb["score"])
+
+    bd = pair_breakdown(ranked, a, b, w)
+    comps = bd[bd["component"] != "TOTAL"].copy()
+    comps["abs"] = comps["delta"].abs()
+    comps = comps.sort_values("abs", ascending=False)
+
+    if gap == 0:
+        head = f"{na} (#{int(ra['rank'])}) and {nb} (#{int(rb['rank'])}) tie at {ra['score']:.1f}."
+    else:
+        winner, loser, mag = (na, nb, gap) if gap > 0 else (nb, na, -gap)
+        head = (f"{winner} beats {loser} by {mag:.1f} pts "
+                f"({na} {ra['score']:.1f} @#{int(ra['rank'])} vs "
+                f"{nb} {rb['score']:.1f} @#{int(rb['rank'])}).")
+
+    lines = [head, "Component contributions (a − b):"]
+    for _, r in comps.iterrows():
+        d = r["delta"]
+        if d == 0:
+            arrow, who = "=", "level"
+        else:
+            arrow, who = ("▲", na) if d > 0 else ("▼", nb)
+        lines.append(f"  {arrow} {r['component']:<34} {d:+5.1f}  "
+                     f"({na} {r[na]:.1f} vs {nb} {r[nb]:.1f}) — favours {who}")
+    return "\n".join(lines)
