@@ -124,11 +124,25 @@ Nothing downstream holds up until this runs, so it's done unprompted:
 
 Hybrid: **deterministic** archetype + brief selection (rule-based, tested — the LLM
 never picks the strategy), then **Claude** (`claude-opus-4-8`) drafts the prose. Tone
-changes with the situation — cold intro vs a skeptical owner (the draft answers the
-*specific* objection found in the notes: price-vs-wholesalers, "for small resellers",
-bad past experience, wants-volume) vs win-back (acknowledges the time gap) vs
-active-customer check-in. **No API key → labelled deterministic templates**, so it
-runs end-to-end either way.
+changes with the situation — cold intro (distinct visit CTA) vs a skeptical owner (the
+draft answers the *specific* objection found in the notes: price-vs-wholesalers, "for
+small resellers", bad past experience, wants-volume) vs win-back (acknowledges the time
+gap) vs active-customer check-in. **No API key → labelled deterministic templates**, so
+it runs end-to-end either way. Copy rules are enforced: first-name only, no dashes, a
+physical-visit CTA.
+
+**We only message verified vintage clothing stores.** Two filters short-circuit before
+any draft, each returning a labelled *skipped* Draft (so the lead still shows in the
+output, just never messaged):
+
+- **Online exclusion** — leads inferred as online-only (reseller scrape / IG-only, no
+  physical presence) are `skipped_online`.
+- **Vintage whitelist** — a lead is drafted only when its bio shows a genuine
+  vintage/secondhand *clothing* signal. Non-clothing verticals (furniture/interiors,
+  charity, records, costume, collectables) and blank/vague bios are unverified and
+  returned as `skipped_not_vintage`.
+
+On the current book: **102 messaged / 62 skipped_online / 28 skipped_not_vintage**.
 
 ### Part 2 city ranking — [`src/part2/city_rank.py`](src/part2/city_rank.py)
 
@@ -165,7 +179,7 @@ src/part1/      cluster.py · rank.py · enrich.py · pipeline.py
 src/part2/      clean.py · outbound.py · city_rank.py · pipeline.py
 src/app.py      Streamlit UI
 run_part1.py    run_part2.py                              (CLIs)
-tests/          102 tests over the real sheet + synthetic fixtures
+tests/          107 tests over the real sheet + synthetic fixtures
 docs/explanations/   one plain-English note per commit
 outputs/samples/     a committed sample of each report
 ```
